@@ -7,18 +7,16 @@ local kp =
   _config+:: {
     namespace: 'monitoring',
 
-    etcd+:: {					// 如果是external-etcd的话，把ips中的ip换成你etcd集群的ip。 并且把你etcd的tls证书放到etcd-tls目录中。
+    etcd+:: {		// 如果是external-etcd的话，把ips中的ip换成你etcd集群的ip。 并且把你etcd的tls证书放到etcd-tls目录中。
       ips: ['10.15.4.253','10.15.4.254','10.15.4.255'],
       clientCA: importstr 'etcd-tls/ca.pem',
       clientKey: importstr 'etcd-tls/etcd-key.pem',
       clientCert: importstr 'etcd-tls/etcd.pem',
-      insecureSkipVerify: true,    
+      insecureSkipVerify: true,
     },
 
     prometheus+:: {
-        names: 'k8s',
-        replicas: 1,
-        rules: {},
+      replicas: 1,
     },
 
 	
@@ -30,7 +28,7 @@ local kp =
     },
 
 
-    alertmanager+:: {			// 填写你相关的配置
+    alertmanager+:: {		// 填写你相关的配置
       name: 'main',
       config: |||
         global:
@@ -53,7 +51,7 @@ local kp =
             agent_id: '1000002'
             api_secret: 'Your wechat_api_secret'
       |||,
-      replicas: 1,				// 定义你想要的副本数，注意：多副本可能会引起重复alter（待证实）
+      replicas: 1,		// 定义你想要的副本数，注意：多副本可能会引起重复alter（待证实）
     },
 
   },
