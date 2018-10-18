@@ -1,0 +1,61 @@
+local kp = 
+(import 'kube-prometheus/kube-prometheus.libsonnet') +
+(import 'kube-prometheus/kube-prometheus-kubeadm.libsonnet') +
+(import 'kube-prometheus/kube-prometheus-node-ports.libsonnet') +
+(import 'kube-prometheus/kube-prometheus-static-etcd.libsonnet') + {
+
+  _config+:: {
+    namespace: 'monitoring',
+
+    etcd+:: {
+      ips: ['10.15.4.253','10.15.4.254','10.15.4.255'],
+      clientCA: importstr 'etcd-tls/ca.pem',
+      clientKey: importstr 'etcd-tls/etcd-key.pem',
+      clientCert: importstr 'etcd-tls/etcd.pem',
+      insecureSkipVerify: true,    
+    },
+
+
+    kubeStateMetrics+:: {
+      baseCPU: '200m',
+      cpuPerNode: '50m',
+      baseMemory: '300Mi',
+      memoryPerNode: '100Mi',
+    },
+
+
+    alertmanager+:: {
+      name: 'main',
+      config: |||
+        global:
+          resolve_timeout: 5m
+          wechat_api_corp_id: '1000002'
+          wechat_api_url: 'https://qyapi.weixin.qq.com/cgi-bin/'
+          wechat_api_secret: 'wub93i_7wzAYQBUTXij0bsj08x7WzykZVOdGxRYFE6c'
+        route:
+          receiver: 'wechat'
+          group_by: ['alertname', 'job', 'instance']
+          group_wait:      30s
+          group_interval:  1m
+          repeat_interval: 10m
+        receivers:
+        - name: 'wechat'
+          wechat_configs:
+          - send_resolved: true
+            corp_id: 'ww5af28914ddf94b3a'
+            to_party: '14'
+            agent_id: '1000002'
+            api_secret: 'wub93i_7wzAYQBUTXij0bsj08x7WzykZVOdGxRYFE6c'
+      |||,
+    },
+
+  },
+};
+
+{ ['00namespace-' + name + '.json']: kp.kubePrometheus[name] for name in std.objectFields(kp.kubePrometheus) } +
+{ ['0prometheus-operator-' + name + '.json']: kp.prometheusOperator[name] for name in std.objectFields(kp.prometheusOperator) } +
+{ ['node-exporter-' + name + '.json']: kp.nodeExporter[name] for name in std.objectFields(kp.nodeExporter) } +
+{ ['kube-state-metrics-' + name + '.json']: kp.kubeStateMetrics[name] for name in std.objectFields(kp.kubeStateMetrics) } +
+{ ['alertmanager-' + name + '.json']: kp.alertmanager[name] for name in std.objectFields(kp.alertmanager) } +
+{ ['prometheus-' + name + '.json']: kp.prometheus[name] for name in std.objectFields(kp.prometheus) } +
+{ ['grafana-' + name + '.json']: kp.grafana[name] for name in std.objectFields(kp.grafana) }
