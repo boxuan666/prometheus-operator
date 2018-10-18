@@ -35,13 +35,13 @@ local kp =
           resolve_timeout: 5m
           wechat_api_corp_id: '1000002'
           wechat_api_url: 'https://qyapi.weixin.qq.com/cgi-bin/'
-          wechat_api_secret: 'wub93i_7wzAYQBUTXij0bsj08x7WzykZVOdGxRYFE6c'
+          wechat_api_secret: 'Your wechat_api_secret'
         route:
           receiver: 'wechat'
           group_by: ['alertname', 'job', 'instance']
           group_wait:      30s
           group_interval:  1m
-          repeat_interval: 10m
+          repeat_interval: 39m
         receivers:
         - name: 'wechat'
           wechat_configs:
