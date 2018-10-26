@@ -51,7 +51,7 @@ local kp =
             agent_id: '1000002'
             api_secret: 'Your wechat_api_secret'
       |||,
-      replicas: 1,		// 定义你想要的副本数，注意：多副本可能会引起重复alter（待证实）
+      replicas: 1,		// 定义你想要的副本数，注意：多副本可能会引起重复alert（待证实）
     },
 
   },
